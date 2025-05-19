@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Conjuguer "aller" - CE1</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    #consigne { font-size: 20px; margin-bottom: 20px; }
+    #phrase { font-size: 24px; margin: 20px; }
+    #clavier { display: flex; flex-wrap: wrap; max-width: 400px; margin: 20px auto; }
+    .touche {
+      width: 40px; height: 40px; margin: 4px;
+      font-size: 20px; text-align: center; line-height: 40px;
+      background: #eee; border: 1px solid #ccc; cursor: pointer;
+    }
+    #inputZone {
+      font-size: 24px; padding: 5px; width: 200px; text-align: center;
+      margin: 10px auto; border: 2px solid #888;
+    }
+    button { padding: 10px 20px; font-size: 18px; margin: 10px; }
+    .valider { background-color: #4CAF50; color: white; }
+    .terminer { background-color: #f44336; color: white; }
+    #feedback { font-size: 20px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div id="consigne">Conjugue le verbe <b>aller</b> à la bonne personne pour compléter la phrase.</div>
+  <div id="phrase"></div>
+  <div><input type="text" id="inputZone" readonly /></div>
+
+  <div id="clavier"></div>
+
+  <button class="valider" onclick="valider()">Valider</button>
+  <button id="suivantBtn" onclick="suivant()" style="display:none">Phrase suivante</button>
+  <button class="terminer" onclick="confirmerFin()">Terminer l'exercice</button>
+
+  <div id="feedback"></div>
+  <div id="score"></div>
+
+<script>
+
+const phrases = [
+  "Mon cousin et moi __ regarder un dessin animé|allons",
+  "Le chien et le chat __ chez le vétérinaire|vont",
+  "Ma sœur __ chez le docteur|va",
+  "Le facteur __ distribuer le courrier|va",
+  "Le coq et les poules __ dans le poulailler|vont",
+  "Les oiseaux __ se poser sur les branches|vont",
+  "Tu __ préparer ton sac|vas",
+  "Le lapin __ dans son terrier|va",
+  "Mon frère et ma cousine __ faire du vélo|vont",
+  "Vous __ coller la feuille|allez",
+  "Elles __ nourrir les poules|vont",
+  "Le soleil et le vent __ réchauffer la terre|vont",
+  "Tu __ chanter avec nous|vas",
+  "Paul et sa sœur __ construire une cabane|vont",
+  "Ils __ bien aujourd’hui|vont",
+  "La tortue __ lentement|va",
+  "Ma copine et moi __ faire de la peinture|allons",
+  "Mes cousins __ visiter le château|vont",
+  "Ton frère et toi __ faire du sport|allez",
+  "La souris __ dans son trou|va",
+  "Mon voisin et moi __ arroser le potager|allons",
+  "Mon chat __ sous le canapé|va",
+  "Le bébé __ dormir bientôt|va",
+  "Le cheval __ dans le pré|va",
+  "Vous __ écouter la consigne|allez",
+  "Je __ acheter une baguette|vais",
+  "Ma grand-mère et moi __ promener le chien|allons",
+  "Ton cousin et toi __ monter la tente|allez",
+  "Mes amis et moi __ participer à la course|allons",
+  "Le roi __ parler à ses soldats|va",
+  "Ils __ préparer une surprise pour la maîtresse|vont",
+  "Ma tante __ promener son chien|va",
+  "Ils __ jouer à cache-cache dans la cour|vont",
+  "Le directeur et toi __ préparer la réunion|allez",
+  "Le chien __ chercher la balle|va",
+  "Les enfants du village __ jouer au ballon|vont",
+  "Nous __ aider la maîtresse|allons",
+  "Mon oncle __ partir en voyage|va",
+  "Elles __ faire un gâteau au chocolat|vont",
+  "Les chats du voisin __ sur le toit|vont",
+  "Vous __ à la piscine tous les samedis|allez",
+  "Mon papa et moi __ bricoler ensemble|allons",
+  "Elle __ peindre un soleil|va",
+  "Ils __ à la bibliothèque|vont",
+  "Elles __ écouter une histoire calme|vont",
+  "Je __ mettre mon manteau|vais",
+  "Ma cousine __ venir demain|va",
+  "Tu __ vite quand tu cours|vas",
+  "Les élèves __ sortir leurs cahiers|vont",
+  "Ma sœur et son amie __ à la bibliothèque|vont",
+  "Mon frère et moi __ jouer au foot|allons",
+  "Je __ jouer avec mes cubes|vais",
+  "Le maître et toi __ expliquer la consigne|allez",
+  "Le chat __ souvent sur le canapé|va",
+  "Elles __ chanter une comptine|vont",
+  "Elles __ de temps en temps à la plage|vont",
+  "Ma sœur et moi __ préparer un gâteau|allons",
+  "Ils __ mettre leurs manteaux|vont",
+  "Les pompiers __ éteindre l’incendie|vont",
+  "Nous __ lire une histoire|allons",
+  "Le maître et la maîtresse __ préparer les exercices|vont",
+  "Mon oncle et toi __ construire un nichoir|allez",
+  "Je __ aider mon petit frère|vais",
+  "Elle __ dans sa chambre lire un livre|va",
+  "Elles __ s’amuser dans la cour|vont",
+  "Il __ souffler ses bougies|va",
+  "Je __ à la cantine avec mes amis|vais",
+  "Tu __ choisir un livre|vas",
+  "Le roi et la reine __ recevoir leurs invités|vont",
+  "Tu __ prendre ton goûter|vas",
+  "Léo __ dans le jardin arroser les fleurs|va",
+  "Les élèves de CE1 __ au spectacle|vont",
+  "Nous __ à la mer en voiture|allons",
+  "Elles __ préparer le goûter|vont",
+  "Le chien et toi __ courir dans le jardin|allez",
+  "Ils __ colorier un dessin|vont",
+  "Vous __ découvrir un nouvel animal|allez",
+  "Elle __ dessiner un arc-en-ciel|va",
+  "Léo et Lucas __ au stade cet après-midi|vont",
+  "Je __ regarder un dessin animé|vais",
+  "Les enfants __ en classe|vont",
+  "Le hérisson __ sous la haie|va",
+  "Les fourmis __ chercher de la nourriture|vont",
+  "Nous __ faire du sport|allons",
+  "Tu __ écrire ton prénom|vas",
+  "Ils __ à la boulangerie à pied|vont",
+  "Le chat et la tortue __ dans la cuisine|vont",
+  "Elle __ jouer à la marelle|va",
+  "Le chien __ dans son panier|va",
+  "Elles __ cueillir des fleurs dans le jardin|vont",
+  "Vous __ faire une promenade|allez",
+  "Toi et moi __ finir ce puzzle|allons",
+  "Je __ à l’école avec mon cartable|vais",
+  "Ils __ sortir les jeux de société|vont",
+  "Je __ dessiner un château|vais",
+  "Les filles de la classe __ faire une danse|vont",
+  "Tu __ apprendre une chanson|vas",
+  "Nous __ ranger la classe|allons",
+  "Le loup __ dans la montagne|va",
+  "Ils __ construire une cabane|vont",
+  "Nous __ parfois au musée|allons",
+  "Vous __ faire du vélo|allez",
+  "Il __ monter dans le bus|va",
+  "Elles __ danser dans la salle|vont",
+  "Le monsieur __ acheter du pain|va",
+  "Ils __ tous les jours à l’école|vont",
+  "Elles __ apprendre une nouvelle règle|vont",
+  "Je __ bien ce matin|vais",
+  "Il __ jouer au ballon|va",
+  "Le lapin et la tortue __ dans le jardin|vont",
+  "Mon petit frère __ pleurer|va",
+  "Elle __ dire bonjour|va",
+  "Les poupées de Léa __ dans leur maison|vont",
+  "Le chat __ souvent sur le canapé|va",
+  "Les garçons __ préparer un sketch|vont",
+  "Il __ au marché chercher des pommes|va",
+  "Les oiseaux __ dans le ciel|vont",
+  "Nous __ faire une ronde|allons",
+  "Ils __ écouter une histoire|vont",
+  "Elle __ chez sa cousine|va",
+  "Les enfants __ à la cantine|vont",
+  "Il __ doucement dans l’escalier|va",
+  "Tu __ chez papi ce soir|vas",
+  "Vous __ apprendre une poésie|allez",
+  "Elles __ cueillir des pommes|vont",
+  "Ma mère et toi __ cuisiner ce soir|allez",
+  "Il __ raconter une histoire drôle|va",
+  "Les élèves __ écrire une carte|vont",
+  "Ils __ souffler les bougies ensemble|vont",
+  "Tu __ découvrir une surprise|vas",
+  "Nous __ au parc pour jouer|allons",
+  "Elles __ traverser le chemin|vont",
+  "Il __ ouvrir la porte|va",
+  "Je __ souffler mes bougies|vais",
+  "Le bébé et le chat __ dormir dans le salon|vont",
+  "Mon grand-père __ arroser les plantes|va",
+  "Je __ bien ce matin|vais",
+  "Le maître et moi __ corriger les copies|allons",
+  "Le hérisson et l’escargot __ lentement|vont",
+  "Mon cousin __ jouer au foot|va",
+  "Elles __ dans la forêt avec leur maîtresse|vont",
+  "Mon cousin et toi __ aider à ranger|allez",
+  "Les élèves __ colorier une grande affiche|vont",
+  "Le chaton et le chiot __ courir dans la cour|vont",
+  "Je __ souffler mes bougies|vais",
+  "Le facteur et le livreur __ sonner à la porte|vont",
+  "Nous __ lire une histoire|allons",
+  "Les amis __ faire un gâteau|vont",
+  "Ils __ sortir les jeux de société|vont",
+  "Le hibou et la chouette __ voler la nuit|vont"
+];
+
+let index = 0;
+let bonnes = 0;
+let total = 0;
+let aDéjàRéponduJuste = false;
+
+
+
+
+function melanger(tab) {
+  for (let i = tab.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tab[i], tab[j]] = [tab[j], tab[i]];
+  }
+  return tab;
+}
+
+let phrasesMelangées = melanger([...phrases]);
+
+function afficherPhrase() {
+  aDéjàRéponduJuste = false;
+aDéjàTenté = false;
+  document.getElementById("inputZone").value = "";
+  document.getElementById("feedback").innerText = "";
+  document.getElementById("suivantBtn").style.display = "none";
+  const [texte] = phrasesMelangées[index].split("|");
+  document.getElementById("phrase").innerText = texte.replace("__", "_____");
+}
+
+function valider() {
+  const [_, reponse] = phrasesMelangées[index].split("|");
+  const saisie = document.getElementById("inputZone").value.trim().toLowerCase();
+
+  if (saisie === reponse) {
+    document.getElementById("feedback").innerText = "Bravo, bonne réponse !";
+    if (!aDéjàRéponduJuste) {
+      bonnes++;
+      total++;
+      aDéjàRéponduJuste = true;
+    }
+    document.getElementById("suivantBtn").style.display = "inline-block";
+  } else {
+    document.getElementById("feedback").innerText = "Essaie encore.";
+  }
+}
+
+
+
+function suivant() {
+  if (index < phrasesMelangées.length - 1) {
+    index++;
+    afficherPhrase();
+  } else {
+    confirmerFin();
+  }
+}
+
+function confirmerFin() {
+  if (confirm("Attention, si tu cliques ici, l'exercice sera terminé et tu ne pourras plus écrire de phrases.")) {
+    terminer();
+  }
+}
+
+function terminer() {
+  document.getElementById("score").innerText = "";
+  document.getElementById("phrase").innerText = "L'exercice est terminé.";
+  document.getElementById("clavier").style.display = "none";
+  document.getElementById("inputZone").style.display = "none";
+  document.getElementById("suivantBtn").style.display = "none";
+  const restartBtn = document.createElement("button");
+  restartBtn.innerText = "Recommencer l'exercice";
+  restartBtn.onclick = () => location.reload();
+  restartBtn.style.marginTop = "20px";
+  document.body.appendChild(restartBtn);
+}
+
+
+
+function appuyer(touche) {
+  document.getElementById("inputZone").value += touche;
+}
+
+function creerClavier() {
+  const lettres = [
+    'a','b','c','d','e','f','g','h','i','j',
+    'k','l','m','n','o','p','q','r','s','t',
+    'u','v','w','x','y','z',
+    'à','é','è','ê','ù',
+    '<',' '
+  ];
+  const clavier = document.getElementById("clavier");
+  lettres.forEach(t => {
+    let btn = document.createElement("div");
+    btn.className = "touche";
+    btn.innerText = t;
+    btn.onclick = () => {
+      if (t === '<') {
+        let zone = document.getElementById("inputZone");
+        zone.value = zone.value.slice(0, -1);
+      } else {
+        appuyer(t);
+      }
+    };
+    clavier.appendChild(btn);
+  });
+}
+
+window.onload = function() {
+  creerClavier();
+  afficherPhrase();
+};
+
+</script>
+</body>
+</html>
