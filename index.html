@@ -24,8 +24,7 @@
   </style>
 </head>
 <body>
-  <div id="consigne">Conjugue le verbe <b>aller</b> à la bonne personne pour compléter la phrase.</div>
-  <div id="phrase"></div>
+ <div id="consigne">Conjugue le verbe indiqué entre parenthèses au <b>futur simple</b>.</div>
   <div><input type="text" id="inputZone" readonly /></div>
 
   <div id="clavier"></div>
@@ -40,27 +39,28 @@
 <script>
 
 const phrases = [
-  "Je __ un gâteau pour l'anniversaire.|préparerai",
-  "Tu __ la table pour le dîner.|mettras",
-  "Il __ une lettre à sa grand-mère.|écrira",
-  "Nous __ une chanson ensemble.|chanterons",
-  "Vous __ un château de sable.|construirez",
-  "Elles __ un joli dessin.|dessineront",
-  "Mon frère __ son vélo.|lavera",
-  "Les enfants __ dans la cour.|joueront",
-  "Ma sœur et moi __ un film.|regarderons",
-  "Tu __ ton cartable.|prépareras",
-  "Il __ le ballon très fort.|lancera",
-  "Nous __ la pièce de théâtre.|répéterons",
-  "Vous __ la maison.|nettoierez",
-  "Je __ mon cahier.|ouvrirai",
-  "Ils __ dans le jardin.|travailleront",
-  "Elle __ son livre préféré.|lira",
-  "Tu __ un message.|enverras",
-  "Nous __ les plantes.|arroserons",
-  "Vous __ au professeur.|répondrez",
-  "Elles __ leurs affaires.|rangeront"
+  "Je __ un gâteau pour l'anniversaire. (préparer)|préparerai",
+  "Tu __ ton cartable avant de partir. (porter)|porteras",
+  "Il __ un dessin pour sa maman. (dessiner)|dessinera",
+  "Nous __ un jeu ensemble à la récréation. (inventer)|inventerons",
+  "Vous __ une lettre au Père Noël. (écrire)|écrirez",
+  "Elles __ les fleurs du jardin. (cueillir)|cueilleront",
+  "Mon frère __ les jouets dans le coffre. (ranger)|rangera",
+  "Les enfants __ dans la cour. (jouer)|joueront",
+  "Ma sœur et moi __ une histoire drôle. (raconter)|raconterons",
+  "Tu __ la table pour le dîner. (dresser)|dresseras",
+  "Il __ le ballon dans le but. (lancer)|lancera",
+  "Nous __ une chanson pour la fête. (chanter)|chanterons",
+  "Vous __ le couloir de l’école. (balayer)|balayerez",
+  "Je __ mon cahier de devoirs. (remplir)|remplirai",
+  "Ils __ un spectacle de marionnettes. (préparer)|prépareront",
+  "Elle __ les couleurs sur la palette. (mélanger)|mélangera",
+  "Tu __ une belle surprise. (préparer)|prépareras",
+  "Nous __ les plantes du potager. (arroser)|arroserons",
+  "Vous __ un cadeau pour votre copain. (fabriquer)|fabriquerez",
+  "Elles __ un gâteau au chocolat. (cuisiner)|cuisineront"
 ];
+
 
 
 let index = 0;
