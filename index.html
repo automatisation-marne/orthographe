@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Conjuguer "aller" - CE1</title>
+  <title>Conjuguer un verbe du 1er groupe - CE1</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 20px; }
     #consigne { font-size: 20px; margin-bottom: 20px; }
@@ -24,10 +24,9 @@
   </style>
 </head>
 <body>
- <div id="consigne">Conjugue le verbe indiqué entre parenthèses au <b>futur simple</b>.</div>
- <div id="phrase"></div>
- <div><input type="text" id="inputZone" readonly /></div>
-
+  <div id="consigne">Conjugue le verbe indiqué entre parenthèses au <b>futur simple</b>.</div>
+  <div id="phrase"></div>
+  <div><input type="text" id="inputZone" readonly /></div>
 
   <div id="clavier"></div>
 
@@ -39,39 +38,23 @@
   <div id="score"></div>
 
 <script>
-
 const phrases = [
   "Je __ un gâteau pour l'anniversaire. (préparer)|préparerai",
   "Tu __ ton cartable avant de partir. (porter)|porteras",
   "Il __ un dessin pour sa maman. (dessiner)|dessinera",
   "Nous __ un jeu ensemble à la récréation. (inventer)|inventerons",
-  "Vous __ une lettre au Père Noël. (écrire)|écrirez",
-  "Elles __ les fleurs du jardin. (cueillir)|cueilleront",
+  "Vous __ une lettre au Père Noël. (aider)|aiderez",
+  "Elles __ les fleurs du jardin. (arroser)|arroseront",
   "Mon frère __ les jouets dans le coffre. (ranger)|rangera",
   "Les enfants __ dans la cour. (jouer)|joueront",
   "Ma sœur et moi __ une histoire drôle. (raconter)|raconterons",
-  "Tu __ la table pour le dîner. (dresser)|dresseras",
-  "Il __ le ballon dans le but. (lancer)|lancera",
-  "Nous __ une chanson pour la fête. (chanter)|chanterons",
-  "Vous __ le couloir de l’école. (balayer)|balayerez",
-  "Je __ mon cahier de devoirs. (remplir)|remplirai",
-  "Ils __ un spectacle de marionnettes. (préparer)|prépareront",
-  "Elle __ les couleurs sur la palette. (mélanger)|mélangera",
-  "Tu __ une belle surprise. (préparer)|prépareras",
-  "Nous __ les plantes du potager. (arroser)|arroserons",
-  "Vous __ un cadeau pour votre copain. (fabriquer)|fabriquerez",
-  "Elles __ un gâteau au chocolat. (cuisiner)|cuisineront"
+  "Tu __ la table pour le dîner. (dresser)|dresseras"
 ];
-
-
 
 let index = 0;
 let bonnes = 0;
 let total = 0;
 let aDéjàRéponduJuste = false;
-
-
-
 
 function melanger(tab) {
   for (let i = tab.length - 1; i > 0; i--) {
@@ -85,7 +68,6 @@ let phrasesMelangées = melanger([...phrases]);
 
 function afficherPhrase() {
   aDéjàRéponduJuste = false;
-aDéjàTenté = false;
   document.getElementById("inputZone").value = "";
   document.getElementById("feedback").innerText = "";
   document.getElementById("suivantBtn").style.display = "none";
@@ -96,7 +78,6 @@ aDéjàTenté = false;
 function valider() {
   const [_, reponse] = phrasesMelangées[index].split("|");
   const saisie = document.getElementById("inputZone").value.trim().toLowerCase();
-
   if (saisie === reponse) {
     document.getElementById("feedback").innerText = "Bravo, bonne réponse !";
     if (!aDéjàRéponduJuste) {
@@ -110,8 +91,6 @@ function valider() {
   }
 }
 
-
-
 function suivant() {
   if (index < phrasesMelangées.length - 1) {
     index++;
@@ -122,13 +101,13 @@ function suivant() {
 }
 
 function confirmerFin() {
-  if (confirm("Attention, si tu cliques ici, l'exercice sera terminé et tu ne pourras plus écrire de phrases.")) {
+  if (confirm("Attention, si tu cliques ici, l'exercice sera terminé.")) {
     terminer();
   }
 }
 
 function terminer() {
-  document.getElementById("score").innerText = "";
+  document.getElementById("score").innerText = `Tu as réussi ${bonnes} phrase(s).`;
   document.getElementById("phrase").innerText = "L'exercice est terminé.";
   document.getElementById("clavier").style.display = "none";
   document.getElementById("inputZone").style.display = "none";
@@ -139,8 +118,6 @@ function terminer() {
   restartBtn.style.marginTop = "20px";
   document.body.appendChild(restartBtn);
 }
-
-
 
 function appuyer(touche) {
   document.getElementById("inputZone").value += touche;
@@ -175,7 +152,6 @@ window.onload = function() {
   creerClavier();
   afficherPhrase();
 };
-
 </script>
 </body>
 </html>
