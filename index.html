@@ -2,150 +2,158 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mots de la même famille</title>
+  <title>Accord du groupe nominal – CE1</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    h1 { font-size: 28px; }
-    #racine { font-size: 24px; margin: 20px 0; }
-    #mots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 600px; margin: 0 auto; }
-    .mot {
-      padding: 10px;
-      font-size: 18px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    .phrase {
+      margin: 20px 0;
+    }
+    input[type="text"] {
+      width: 250px;
+      padding: 5px;
+      margin-left: 5px;
+      font-size: 16px;
+      caret-color: transparent;
+    }
+    .keyboard {
+      display: none;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+      max-width: 500px;
+    }
+    .key {
+      padding: 10px 12px;
+      background-color: #eee;
+      border: 1px solid #aaa;
+      border-radius: 4px;
       cursor: pointer;
       user-select: none;
+      font-size: 16px;
+      min-width: 30px;
+      text-align: center;
     }
-    .mot.correct { background-color: #c8f7c5; border-color: green; pointer-events: none; }
-    .mot.incorrect { background-color: #f7c5c5; border-color: red; }
-    #suivant { display: none; margin-top: 20px; font-size: 18px; padding: 10px 20px; }
+    .key:hover {
+      background-color: #ddd;
+    }
+    #feedback {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #compteur {
+      margin-top: 20px;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
-  <h1>Mots de la même famille</h1>
-  <div id="racine"></div>
-  <div id="mots"></div>
-  <button id="suivant" onclick="motSuivant()">Mot suivant</button>
 
-  <script>
-    const liste = [
-      {
-        racine: "chanter",
-        bons: ["chanteur", "chanson", "chant", "chanté", "chantonne"],
-        leurres: ["chance", "change", "manche", "chambre", "chapeau", "chantier", "manchette", "chanvre", "chardon", "champ", "char", "chaise", "champignon", "chaîne", "chantier"]
-      },
-      {
-        racine: "manger",
-        bons: ["mange", "mangeur", "mangé", "mangeable", "mangeaille"],
-        leurres: ["marcher", "mélange", "mage", "image", "marge", "mangeoire", "manguier", "mangue", "mariage", "manège", "main", "magie", "ménage", "montage", "mangeoire"]
-      },
-      {
-        racine: "jouer",
-        bons: ["joueur", "jouet", "jouait", "rejouer", "jouera"],
-        leurres: ["jour", "joie", "joint", "joute", "jaune", "joug", "journal", "jurer", "jonc", "juré", "joncher", "jouvence", "jument", "jungle", "jouteur"]
-      },
-      {
-        racine: "nager",
-        bons: ["nage", "nageur", "nageait", "nageoire", "nagé"],
-        leurres: ["neige", "ranger", "gager", "âge", "page", "sage", "cage", "rage", "vague", "langage", "gage", "village", "bague", "pagne", "pageant"]
-      },
-      {
-        racine: "courir",
-        bons: ["course", "courait", "courant", "recourir", "coureur"],
-        leurres: ["courbe", "couronne", "courage", "courrier", "courgette", "courtil", "courroie", "court", "couronnement", "couronneuse", "courber", "courtisan", "courtier", "courlis", "courrier"]
-      },
-      {
-        racine: "parler",
-        bons: ["parlait", "parole", "parleur", "reparler", "parlé"],
-        leurres: ["partir", "parc", "parlerie", "pardonner", "paresse", "partiel", "part", "partie", "parquet", "parure", "pan", "parloir", "parade", "parfum", "parent"]
-      },
-      {
-        racine: "regarder",
-        bons: ["regard", "regardait", "regardé", "regardeur", "regardons"],
-        leurres: ["garder", "garde", "jardinier", "garer", "radar", "garagiste", "gardien", "garage", "rigole", "rigueur", "rigide", "rigolade", "roder", "ridé", "vision"]
-      },
-      {
-        racine: "dessiner",
-        bons: ["dessin", "dessinait", "dessinateur", "dessiné", "redessiner"],
-        leurres: ["design", "dessein", "désirer", "désert", "dessinette", "destin", "destinée", "désirerai", "dessiccation", "désordre", "dîner", "dinosaure", "dessouler", "dessiller", "discipline"]
-      },
-      {
-        racine: "lire",
-        bons: ["lisait", "lecture", "lecteur", "relire", "lu"],
-        leurres: ["libre", "librairie", "délire", "lyre", "lier", "lierre", "livret", "livreur", "livrer", "lit", "ligne", "lion", "liquide", "limite", "lisse"]
-      },
-      {
-        racine: "ouvrir",
-        bons: ["ouvert", "ouverture", "rouvrir", "s’ouvre", "ouvrira"],
-        leurres: ["ourdir", "ouragan", "ours", "œuf", "ouïr", "ourlet", "or", "oursin", "ouvrage", "ouvrière", "ourdisseur", "ouate", "orage", "orfèvre", "orignal"]
-      },
-      {
-        racine: "pleuvoir",
-        bons: ["pluie", "pleuvait", "pluvieux", "pleuvra", "a plu"],
-        leurres: ["pleurer", "plume", "pli", "plouf", "plié", "plaine", "plaire", "plan", "plus", "plomb", "pleur", "plateau", "plonger", "plâtre", "planté"]
-      },
-      {
-        racine: "danser",
-        bons: ["danse", "dansait", "danseur", "dansé", "redanser"],
-        leurres: ["dense", "danger", "danseuse", "distance", "donner", "denser", "dinde", "dîner", "don", "doigt", "dé", "darder", "lancer", "bal", "galop"]
-      },
-      {
-        racine: "crier",
-        bons: ["cri", "criait", "crié", "crieur", "criard"],
-        leurres: ["crime", "crique", "croix", "croire", "crinière", "crise", "crayon", "criblé", "criquet", "créer", "criquetier", "croquer", "crame", "crâne", "craie"]
-      },
-      {
-        racine: "voler",
-        bons: ["vol", "vole", "volait", "voleur", "envol"],
-        leurres: ["voile", "violon", "volerette", "voleront", "voiture", "volume", "voleuse", "viol", "volant", "valve", "village", "volonté", "volcan", "valeur", "volaille"]
-      }
-    ];
+<h1>Exercices CE1 – Accord du groupe nominal</h1>
 
-    let index = 0;
-    let trouvés = 0;
+<div id="conteneur-phrases"></div>
+<div id="keyboard" class="keyboard"></div>
+<div id="feedback"></div>
+<button id="valider">Valider</button>
+<div id="compteur">Phrases réussies : 0</div>
 
-    function afficherMot() {
-      document.getElementById("suivant").style.display = "none";
-      const zone = document.getElementById("mots");
-      zone.innerHTML = "";
-      trouvés = 0;
+<script>
+  const phrases = [
+    { texte: "Ce matin, je vois des (brun, cheval).", reponse: "chevaux bruns" },
+    { texte: "La fermière nourrit un (blanc, mouton).", reponse: "mouton blanc" },
+    { texte: "Près de l’étang, il y a deux (gris, canard).", reponse: "canards gris" },
+    { texte: "Enfin, je caresse le (noir, chien).", reponse: "chien noir" },
+    { texte: "J’écris avec une (bleu, règle).", reponse: "règle bleue" },
+    { texte: "Mon voisin a des (rouge, stylo).", reponse: "stylos rouges" },
+    { texte: "Nous collons les (jaune, feuille).", reponse: "feuilles jaunes" },
+    { texte: "La maîtresse nous lit un (gros, livre).", reponse: "gros livre" },
+    { texte: "Papa choisit un (long, poireau).", reponse: "long poireau" },
+    { texte: "Le marchand vend des (rouge, tomate).", reponse: "tomates rouges" },
+    { texte: "Nous prenons les (orange, carotte).", reponse: "carottes oranges" },
+    { texte: "Maman achète une (petit, pomme).", reponse: "petite pomme" },
+    { texte: "Les enfants lancent des (gros, boule).", reponse: "grosses boules" },
+    { texte: "Je mets un (épais, bonnet).", reponse: "bonnet épais" },
+    { texte: "Nous buvons une (chaud, boisson).", reponse: "boisson chaude" },
+    { texte: "Les skieurs portent des (vert, combinaison).", reponse: "combinaisons vertes" }
+  ];
 
-      const { racine, bons, leurres } = liste[index];
-      document.getElementById("racine").innerText = "Mot racine : " + racine;
+  const clavier = document.getElementById("keyboard");
+  const feedback = document.getElementById("feedback");
+  const compteurAffichage = document.getElementById("compteur");
+  const conteneur = document.getElementById("conteneur-phrases");
+  const validerBtn = document.getElementById("valider");
 
-      const tous = [...bons, ...leurres];
-      tous.sort(() => Math.random() - 0.5);
+  let index = 0;
+  let bonnesReponses = 0;
+  let currentInput = null;
 
-      tous.forEach(mot => {
-        const div = document.createElement("div");
-        div.innerText = mot;
-        div.className = "mot";
-        div.onclick = () => verifier(mot, div);
-        zone.appendChild(div);
-      });
-    }
+  function afficherPhrase() {
+    conteneur.innerHTML = "";
+    feedback.textContent = "";
+    const phrase = phrases[index];
+    const div = document.createElement("div");
+    div.className = "phrase";
+    div.innerHTML = `${phrase.texte} <input type="text" readonly id="champ" />`;
+    conteneur.appendChild(div);
+    document.getElementById("champ").addEventListener("click", () => {
+      currentInput = document.getElementById("champ");
+      clavier.style.display = "flex";
+      currentInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
 
-    function verifier(mot, element) {
-      const bons = liste[index].bons;
-      if (bons.includes(mot)) {
-        element.classList.add("correct");
-        trouvés++;
-        if (trouvés === bons.length) {
-          document.getElementById("suivant").style.display = "inline-block";
-        }
+  const lettres = [..."abcdefghijklmnopqrstuvwxyz", "é", "è", "ê", "à", "ù", "ç", " ", "←"];
+  lettres.forEach(char => {
+    const key = document.createElement("div");
+    key.className = "key";
+    key.textContent = char === " " ? "␣" : char;
+    key.onclick = () => {
+      if (!currentInput) return;
+      if (char === "←") {
+        currentInput.value = currentInput.value.slice(0, -1);
       } else {
-        element.classList.add("incorrect");
-        setTimeout(() => element.classList.remove("incorrect"), 800);
+        currentInput.value += char;
       }
-    }
+    };
+    clavier.appendChild(key);
+  });
 
-    function motSuivant() {
-      index++;
-      if (index >= liste.length) index = 0;
-      afficherMot();
+  validerBtn.addEventListener("click", () => {
+    if (!currentInput) return;
+    const attendu = phrases[index].reponse.toLowerCase();
+    const saisi = currentInput.value.trim().toLowerCase();
+    if (saisi === attendu) {
+      feedback.textContent = "✅ Bravo ! C’est correct.";
+      feedback.style.color = "green";
+      bonnesReponses++;
+      compteurAffichage.textContent = `Phrases réussies : ${bonnesReponses}`;
+    } else {
+      feedback.textContent = `❌ Non, essaie encore.`;
+      feedback.style.color = "red";
+      return;
     }
+    index++;
+    if (index < phrases.length) {
+      setTimeout(() => afficherPhrase(), 1000);
+    } else {
+      feedback.textContent = "🎉 Exercice terminé !";
+      clavier.style.display = "none";
+    }
+  });
 
-    afficherMot();
-  </script>
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("input") && !e.target.closest(".key")) {
+      clavier.style.display = "none";
+      currentInput = null;
+    }
+  });
+
+  afficherPhrase();
+</script>
+
 </body>
 </html>
